@@ -55,8 +55,75 @@ WebApp._onPageReady = function()
     // Connect handler for signal ActionActivated
     Nuvola.actions.connect("ActionActivated", this);
 
+    // Prevent links opening in new windows or popups
+    // Without this we can't integrate the radio player.
+    var wrapped_window = window.open;
+    window.open = function(url, name, specs, replace) {
+       wrapped_window(url, "_self", specs, replace);
+    }
+
     // Start update routine
     this.update();
+}
+
+WebApp._get_html5_player = function()
+{
+    try {
+        // The HTML5 player is inside an iframe
+        return document.getElementById("smphtml5iframeplayer").contentDocument;
+    } catch(e) {
+        return null;
+    }
+}
+
+WebApp._get_play_button = function()
+{
+    try {
+        var tv_player = this._get_html5_player();
+        if (tv_player)
+            return tv_player.getElementsByClassName("p_playButton")[0];
+
+        // else radio player
+        var radio_play = document.getElementById("btn-play");
+        if (radio_play)
+	    return radio_play;
+
+        // else Listen button
+        return document.getElementById("programmes-oap-listen");
+    } catch(e) {
+        return null;
+    }
+}
+
+WebApp._get_pause_button = function()
+{
+    try {
+        var tv_player = this._get_html5_player();
+        if (tv_player)
+            return tv_player.getElementsByClassName("p_pauseButton")[0];
+        // else radio player
+        return document.getElementById("btn-pause");
+    } catch(e) {
+        return null;
+    }
+}
+
+WebApp._is_tv_playing = function()
+{
+    return this._get_html5_player() && this._get_pause_button();
+}
+ 
+WebApp._is_radio_playing = function()
+{
+    var radio_controls = document.getElementById("controls");
+    return (radio_controls
+            && (radio_controls.className == "stoppable"
+	        || radio_controls.className == "pauseable"));
+}
+
+WebApp._is_playing = function()
+{
+    return this._is_tv_playing() || this._is_radio_playing();
 }
 
 // Extract data from the web page
@@ -70,8 +137,31 @@ WebApp.update = function()
         rating: null
     }
 
+    var state = PlaybackState.UNKNOWN;
+
+    try {
+        var title = document.getElementsByTagName("title")[0].innerHTML || null;
+        var pos = title.indexOf(" - ");
+        if (pos != -1)
+            track["title"] = title.substring(pos+3);
+
+        var img = document.getElementById("player-outer").getElementsByTagName("img")[0];
+        track["artLocation"] = img.src;
+    } catch (e) {}
+
+    var playButton = this._get_play_button();
+    var pauseButton = this._get_pause_button();
+
+    if (this._is_playing()) {
+	state = PlaybackState.PLAYING;
+    } else if (pauseButton) {
+	state = PlaybackState.PAUSED;
+    }
+
     player.setTrack(track);
-    player.setPlaybackState(PlaybackState.UNKNOWN);
+    player.setPlaybackState(state);
+    player.setCanPlay(!!playButton);
+    player.setCanPause(!!pauseButton);
 
     // Schedule the next update
     setTimeout(this.update.bind(this), 500);
@@ -80,6 +170,24 @@ WebApp.update = function()
 // Handler of playback actions
 WebApp._onActionActivated = function(emitter, name, param)
 {
+  Nuvola.log("here");
+    switch (name) {
+    case PlayerAction.TOGGLE_PLAY:
+	var button = this._is_playing() ? this._get_pause_button() : this._get_play_button();
+	if (button)
+	    Nuvola.clickOnElement(button);
+	break;
+    case PlayerAction.PLAY:
+	var button = this._get_play_button();
+	if (button)
+	    Nuvola.clickOnElement(button);
+	break;
+    case PlayerAction.PAUSE:
+	var button = this._get_pause_button();
+	if (button)
+	    Nuvola.clickOnElement(button);
+	break;
+    }
 }
 
 WebApp.start();
