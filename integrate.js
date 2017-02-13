@@ -66,14 +66,40 @@ WebApp._onPageReady = function()
     this.update();
 }
 
+WebApp._message_added = false;
+
 WebApp._get_html5_player = function()
 {
-    try {
-        // The HTML5 player is inside an iframe
-        return document.getElementById("smphtml5iframeplayer").contentDocument;
-    } catch(e) {
-        return null;
+    var player = document.getElementById("smphtml5iframeplayer");
+    
+    if (player) {
+        return player.contentDocument;
     }
+    else if (!this._message_added) {
+        var flashplayer = document.getElementById("smp-flashSWFplayer");
+        var html5page = document.location.pathname == "/html5";
+        if (flashplayer || html5page) {
+            var messagediv = Nuvola.makeElement("div",
+                {"style": "width: 100%; border: 1px solid black;"
+                          + "background: #5294e2; color: white;"
+                          + "font-size: 200%; font-weight: bold;"
+                          + "padding: 10px; z-index: 10000;"},
+                "Nuvola cannot integrate the Flash player. ");
+            var part2;
+            if (html5page) {
+                part2 = Nuvola.makeText("Please opt into HTML5 player below.");
+            } else {
+                part2 = Nuvola.makeElement("a",
+                    {"href": "/html5"},
+                    "Opt in to the HTML5 player.");
+            }
+            messagediv.appendChild(part2);
+            document.body.insertBefore(messagediv, document.body.childNodes[0]);
+            this._message_added = true;
+        }
+    }
+
+    return null;
 }
 
 WebApp._get_play_button = function()
@@ -193,3 +219,5 @@ WebApp._onActionActivated = function(emitter, name, param)
 WebApp.start();
 
 })(this);  // function(Nuvola)
+
+// vim: tabstop=4 shiftwidth=4 expandtab
