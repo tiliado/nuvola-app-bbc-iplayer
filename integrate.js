@@ -70,30 +70,31 @@ WebApp._message_added = false;
 
 WebApp._get_html5_player = function()
 {
-    var player = document.getElementById("smphtml5iframeplayer");
+    var player = document.getElementById("smphtml5iframeplayer")
+                 || document.getElementById("smphtml5iframemedia-player-1");
     
     if (player) {
         return player.contentDocument;
     }
     else if (!this._message_added) {
-        var flashplayer = document.getElementById("smp-flashSWFplayer");
+        var flashplayer = document.getElementById("smp-flashSWFplayer")
+                          || document.getElementById("smp-flashSWFmedia-player-1");
         var html5page = document.location.pathname == "/html5";
         if (flashplayer || html5page) {
             var messagediv = Nuvola.makeElement("div",
                 {"style": "width: 100%; border: 1px solid black;"
                           + "background: #5294e2; color: white;"
                           + "font-size: 200%; font-weight: bold;"
-                          + "padding: 10px; z-index: 10000;"},
-                "Nuvola cannot integrate the Flash player. ");
-            var part2;
+                          + "padding: 10px; z-index: 10000;"}, "");
             if (html5page) {
-                part2 = Nuvola.makeText("Please opt into HTML5 player below.");
+                messagediv.appendChild(Nuvola.makeText("Please opt into HTML5 player below."));
+                messagediv.appendChild(Nuvola.makeElement("p", {}, "The BBC may still use the Flash player for some content."));
             } else {
-                part2 = Nuvola.makeElement("a",
+                messagediv.appendChild(Nuvola.makeText("Nuvola cannot integrate the Flash player. "));
+                messagediv.appendChild(Nuvola.makeElement("a",
                     {"href": "/html5"},
-                    "Opt in to the HTML5 player.");
+                    "Opt in to the HTML5 player."));
             }
-            messagediv.appendChild(part2);
             document.body.insertBefore(messagediv, document.body.childNodes[0]);
             this._message_added = true;
         }
@@ -196,7 +197,6 @@ WebApp.update = function()
 // Handler of playback actions
 WebApp._onActionActivated = function(emitter, name, param)
 {
-  Nuvola.log("here");
     switch (name) {
     case PlayerAction.TOGGLE_PLAY:
 	var button = this._is_playing() ? this._get_pause_button() : this._get_play_button();
