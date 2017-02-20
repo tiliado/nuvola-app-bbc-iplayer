@@ -1,8 +1,13 @@
-BBC iPlayer Nuvola Player App
+BBC iPlayer Nuvola Player App (beta)
 =============================
 
 Integration of BBC iPlayer into your linux desktop via
 [Nuvola Player](https://github.com/tiliado/nuvolaplayer).
+
+This is a beta release: support for HTML5 Media Source Extensions (MSE) is new
+to WebKitGtk and may be still incomplete. Most BBC content works, most of the
+time, but not all. In those cases you can still use the Flash player, but
+Nuvola will be unable to detect or control playing state.
  
 Support
 -------
