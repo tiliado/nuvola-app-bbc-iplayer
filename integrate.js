@@ -180,15 +180,15 @@ WebApp.update = function()
     var pauseButton = this._get_pause_button();
 
     if (this._is_playing()) {
-	state = PlaybackState.PLAYING;
-    } else if (pauseButton) {
-	state = PlaybackState.PAUSED;
+	    state = PlaybackState.PLAYING;
+    } else if (playButton) {
+	    state = PlaybackState.PAUSED;
     }
 
     player.setTrack(track);
     player.setPlaybackState(state);
-    player.setCanPlay(!!playButton);
-    player.setCanPause(!!pauseButton);
+    player.setCanPlay(state != PlaybackState.PLAYING && !!playButton);
+    player.setCanPause(state != PlaybackState.PAUSED && !!pauseButton);
 
     // Schedule the next update
     setTimeout(this.update.bind(this), 500);
