@@ -70,15 +70,13 @@ WebApp._message_added = false;
 
 WebApp._get_html5_player = function()
 {
-    var player = document.getElementById("smphtml5iframeplayer")
-                 || document.getElementById("smphtml5iframemedia-player-1");
+    var player = document.querySelector(".playback-player iframe");
     
     if (player) {
         return player.contentDocument;
     }
     else if (!this._message_added) {
-        var flashplayer = document.getElementById("smp-flashSWFplayer")
-                          || document.getElementById("smp-flashSWFmedia-player-1");
+        var flashplayer = document.querySelector(".playback-player object");
         var html5page = document.location.pathname == "/html5";
         if (flashplayer || html5page) {
             var messagediv = Nuvola.makeElement("div",
@@ -166,15 +164,12 @@ WebApp.update = function()
 
     var state = PlaybackState.UNKNOWN;
 
-    try {
-        var title = document.getElementsByTagName("title")[0].innerHTML || null;
-        var pos = title.indexOf(" - ");
-        if (pos != -1)
-            track["title"] = title.substring(pos+3);
-
-        var img = document.getElementById("player-outer").getElementsByTagName("img")[0];
-        track["artLocation"] = img.src;
-    } catch (e) {}
+    var elm = document.head.querySelector("[property='og:title']");
+    if (elm)
+        track["title"] = elm.content;
+    elm = document.head.querySelector("[property='og:image']");
+    if (elm)
+        track["artLocation"] = elm.content;
 
     var playButton = this._get_play_button();
     var pauseButton = this._get_pause_button();
