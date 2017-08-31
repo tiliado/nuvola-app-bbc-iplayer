@@ -70,7 +70,8 @@ WebApp._message_added = false;
 
 WebApp._get_html5_player = function()
 {
-    var player = document.querySelector(".playback-player iframe");
+    var player = document.querySelector(".playback-player iframe")
+                 || document.querySelector(".media-player iframe");
     
     if (player) {
         return player.contentDocument;
