@@ -1,8 +1,8 @@
 BBC iPlayer Change Log
 ======================
 
-1.2 - unreleased
-----------------
+1.2 - September 1, 2017
+---------------------
 
   * Update following BBC changes.
 
