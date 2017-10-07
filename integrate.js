@@ -68,10 +68,11 @@ WebApp._onPageReady = function()
 
 WebApp._message_added = false;
 
-WebApp._get_html5_player = function()
+WebApp._get_media_frame = function()
 {
     var player = document.querySelector(".playback-player iframe")
-                 || document.querySelector(".media-player iframe");
+                 || document.querySelector(".media-player iframe")
+                 || document.querySelector(".episode-playout iframe");
     
     if (player) {
         return player.contentDocument;
@@ -102,33 +103,23 @@ WebApp._get_html5_player = function()
     return null;
 }
 
-WebApp._get_play_button = function()
+WebApp._get_media = function()
 {
     try {
-        var tv_player = this._get_html5_player();
-        if (tv_player)
-            return tv_player.getElementsByClassName("p_playButton")[0];
-
-        // else radio player
-        var radio_play = document.getElementById("btn-play");
-        if (radio_play)
-	    return radio_play;
-
-        // else Listen button
-        return document.getElementById("programmes-oap-listen");
+        var iframe = this._get_media_frame();
+        return iframe.querySelector("audio")
+               || iframe.querySelector("video");
     } catch(e) {
         return null;
     }
 }
 
-WebApp._get_pause_button = function()
+WebApp._get_play_button = function()
 {
     try {
-        var tv_player = this._get_html5_player();
-        if (tv_player)
-            return tv_player.getElementsByClassName("p_pauseButton")[0];
-        // else radio player
-        return document.getElementById("btn-pause");
+        var iframe = this._get_media_frame();
+        return iframe.querySelector(".p_playButton")
+               || iframe.querySelector(".p_button");
     } catch(e) {
         return null;
     }
@@ -137,7 +128,7 @@ WebApp._get_pause_button = function()
 WebApp._get_skip_button = function()
 {
     try {
-        var tv_player = this._get_html5_player();
+        var tv_player = this._get_media_frame();
         return tv_player.querySelector(".skip-button");
     } catch(e) {
         return null;
@@ -146,7 +137,8 @@ WebApp._get_skip_button = function()
 
 WebApp._is_tv_playing = function()
 {
-    return this._get_html5_player() && this._get_pause_button();
+    var media = this._get_media();
+    return media && !media.paused;
 }
  
 WebApp._is_radio_playing = function()
@@ -182,21 +174,29 @@ WebApp.update = function()
     if (elm)
         track["artLocation"] = elm.content;
 
+    var media = this._get_media();
     var playButton = this._get_play_button();
-    var pauseButton = this._get_pause_button();
     var skipButton = this._get_skip_button();
 
-    if (this._is_playing()) {
+    if (media && !media.paused) {
 	    state = PlaybackState.PLAYING;
     } else if (playButton) {
 	    state = PlaybackState.PAUSED;
     }
 
+    if (media) {
+        track.length = parseInt(media.duration) * 1000000;
+        player.setTrackPosition(media.currentTime * 1000000);
+        player.updateVolume(media.volume);
+    }
+
     player.setTrack(track);
     player.setPlaybackState(state);
     player.setCanPlay(state != PlaybackState.PLAYING && !!playButton);
-    player.setCanPause(state != PlaybackState.PAUSED && !!pauseButton);
+    player.setCanPause(state == PlaybackState.PLAYING);
     player.setCanGoNext(!!skipButton);
+    player.setCanSeek(media && media.seekable.length > 0);
+    player.setCanChangeVolume(media);
 
     // Schedule the next update
     setTimeout(this.update.bind(this), 500);
@@ -207,24 +207,33 @@ WebApp._onActionActivated = function(emitter, name, param)
 {
     switch (name) {
         case PlayerAction.TOGGLE_PLAY:
-            var button = this._is_playing() ? this._get_pause_button() : this._get_play_button();
-            if (button)
-                Nuvola.clickOnElement(button);
-            break;
+        case PlayerAction.PAUSE:
+            var media = this._get_media();
+            if (media && !media.paused) {
+                media.pause();
+                break;
+            }
+            // Fallthrough
         case PlayerAction.PLAY:
+            // Use the button because media.play() doesn't work initially
             var button = this._get_play_button();
             if (button)
                 Nuvola.clickOnElement(button);
            break;
-        case PlayerAction.PAUSE:
-            var button = this._get_pause_button();
-            if (button)
-                Nuvola.clickOnElement(button);
-            break;
         case PlayerAction.NEXT_SONG:
             var button = this._get_skip_button();
             if (button)
                 Nuvola.clickOnElement(button);
+            break;
+        case PlayerAction.SEEK:  // @API 4.5: undefined & ignored in Nuvola < 4.5
+            var media = this._get_media();
+            if (media)
+                media.currentTime = param/1000000;
+            break;
+        case PlayerAction.CHANGE_VOLUME:  // @API 4.5: undefined & ignored in Nuvola < 4.5
+            var media = this._get_media();
+            if (media)
+                media.volume = param;
             break;
     }
 }
