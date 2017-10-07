@@ -134,6 +134,16 @@ WebApp._get_pause_button = function()
     }
 }
 
+WebApp._get_skip_button = function()
+{
+    try {
+        var tv_player = this._get_html5_player();
+        return tv_player.querySelector(".skip-button");
+    } catch(e) {
+        return null;
+    }
+}
+
 WebApp._is_tv_playing = function()
 {
     return this._get_html5_player() && this._get_pause_button();
@@ -174,6 +184,7 @@ WebApp.update = function()
 
     var playButton = this._get_play_button();
     var pauseButton = this._get_pause_button();
+    var skipButton = this._get_skip_button();
 
     if (this._is_playing()) {
 	    state = PlaybackState.PLAYING;
@@ -185,6 +196,7 @@ WebApp.update = function()
     player.setPlaybackState(state);
     player.setCanPlay(state != PlaybackState.PLAYING && !!playButton);
     player.setCanPause(state != PlaybackState.PAUSED && !!pauseButton);
+    player.setCanGoNext(!!skipButton);
 
     // Schedule the next update
     setTimeout(this.update.bind(this), 500);
@@ -194,21 +206,26 @@ WebApp.update = function()
 WebApp._onActionActivated = function(emitter, name, param)
 {
     switch (name) {
-    case PlayerAction.TOGGLE_PLAY:
-	var button = this._is_playing() ? this._get_pause_button() : this._get_play_button();
-	if (button)
-	    Nuvola.clickOnElement(button);
-	break;
-    case PlayerAction.PLAY:
-	var button = this._get_play_button();
-	if (button)
-	    Nuvola.clickOnElement(button);
-	break;
-    case PlayerAction.PAUSE:
-	var button = this._get_pause_button();
-	if (button)
-	    Nuvola.clickOnElement(button);
-	break;
+        case PlayerAction.TOGGLE_PLAY:
+            var button = this._is_playing() ? this._get_pause_button() : this._get_play_button();
+            if (button)
+                Nuvola.clickOnElement(button);
+            break;
+        case PlayerAction.PLAY:
+            var button = this._get_play_button();
+            if (button)
+                Nuvola.clickOnElement(button);
+           break;
+        case PlayerAction.PAUSE:
+            var button = this._get_pause_button();
+            if (button)
+                Nuvola.clickOnElement(button);
+            break;
+        case PlayerAction.NEXT_SONG:
+            var button = this._get_skip_button();
+            if (button)
+                Nuvola.clickOnElement(button);
+            break;
     }
 }
 
