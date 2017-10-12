@@ -1,8 +1,8 @@
 BBC iPlayer Change Log
 ======================
 
-1.3 - unreleased
-----------------
+1.3 - October 12, 2017
+-------------------
 
   * Fix some integration issues with radio shows.
   * Integrate playback position.
