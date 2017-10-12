@@ -7,6 +7,7 @@ BBC iPlayer Change Log
   * Fix some integration issues with radio shows.
   * Integrate playback position.
   * Integrate volume controls.
+  * Add skip action.
 
 1.2 - September 1, 2017
 ---------------------
