@@ -17,5 +17,5 @@
             "src/icon-sm.svg 32 48"
         ]
     },
-    "requirements": "WebKitGTK[2.15.3] Codec[MP3] Codec[H264] Feature[MSE] Feature[Flash]"
+    "requirements": "Codec[MP3] Codec[H264] Feature[MSE] Feature[Flash]"
 }
