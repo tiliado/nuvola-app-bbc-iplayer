@@ -66,38 +66,15 @@ WebApp._onPageReady = function()
     this.update();
 }
 
-WebApp._message_added = false;
-
 WebApp._get_media_frame = function()
 {
     var player = document.querySelector(".playback-player iframe")
                  || document.querySelector(".media-player iframe")
-                 || document.querySelector(".episode-playout iframe");
+                 || document.querySelector(".episode-playout iframe")
+                 || document.querySelector("#player iframe");
     
     if (player) {
         return player.contentDocument;
-    }
-    else if (!this._message_added) {
-        var flashplayer = document.querySelector(".playback-player object");
-        var html5page = document.location.pathname == "/html5";
-        if (flashplayer || html5page) {
-            var messagediv = Nuvola.makeElement("div",
-                {"style": "width: 100%; border: 1px solid black;"
-                          + "background: #5294e2; color: white;"
-                          + "font-size: 200%; font-weight: bold;"
-                          + "padding: 10px; z-index: 10000;"}, "");
-            if (html5page) {
-                messagediv.appendChild(Nuvola.makeText("Please opt into HTML5 player below."));
-                messagediv.appendChild(Nuvola.makeElement("p", {}, "The BBC may still use the Flash player for some content."));
-            } else {
-                messagediv.appendChild(Nuvola.makeText("Nuvola cannot integrate the Flash player. "));
-                messagediv.appendChild(Nuvola.makeElement("a",
-                    {"href": "/html5"},
-                    "Opt in to the HTML5 player."));
-            }
-            document.body.insertBefore(messagediv, document.body.childNodes[0]);
-            this._message_added = true;
-        }
     }
 
     return null;
@@ -185,9 +162,25 @@ WebApp.update = function()
     }
 
     if (media) {
-        track.length = parseInt(media.duration) * 1000000;
-        player.setTrackPosition(media.currentTime * 1000000);
+        if (media.duration < 36000 && media.duration > 0) {
+            track.length = parseInt(media.duration) * 1000000;
+            player.setTrackPosition(media.currentTime * 1000000);
+        }
         player.updateVolume(media.volume);
+
+        // If there's media, but no title property, then look further
+        if (!track.title) {
+            try {
+                // For Live TV the channel name is highlighted below the video
+                elm = document.querySelector(".channel.current");
+                track["title"] = elm.querySelector("span").innerText;
+
+                // Likewise the channel logo.
+                var style = document.defaultView.getComputedStyle(elm, null);
+                var url = style.getPropertyValue("background-image");
+                track["artLocation"] = url.slice(5,-2);
+            } catch(e) {}
+        }
     }
 
     player.setTrack(track);

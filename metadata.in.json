@@ -6,8 +6,8 @@
     "maintainer_link": "https://github.com/a-m-s", 
     "version_major": 1, 
     "version_minor": 3, 
-    "api_major": 3, 
-    "api_minor": 1, 
+    "api_major": 4, 
+    "api_minor": 9, 
     "categories": "AudioVideo;Audio;", 
     "license": "2-Clause BSD-license; CC-BY-SA 3.0", 
     "build": {
@@ -17,5 +17,5 @@
             "src/icon-sm.svg 32 48"
         ]
     },
-    "requirements": "WebKitGTK[2.15.3] Codec[MP3] Codec[H264] Feature[MSE] Feature[Flash]"
+    "requirements": "Codec[MP3] Codec[H264] Feature[MSE] Feature[Flash]"
 }
