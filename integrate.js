@@ -71,7 +71,8 @@ WebApp._get_media_frame = function()
     var player = document.querySelector(".playback-player iframe")
                  || document.querySelector(".media-player iframe")
                  || document.querySelector(".episode-playout iframe")
-                 || document.querySelector("#player iframe");
+                 || document.querySelector("#player iframe")
+                 || document.querySelector(".radioplayer iframe");
     
     if (player) {
         return player.contentDocument;
@@ -179,6 +180,16 @@ WebApp.update = function()
                 var style = document.defaultView.getComputedStyle(elm, null);
                 var url = style.getPropertyValue("background-image");
                 track["artLocation"] = url.slice(5,-2);
+            } catch(e) {}
+        }
+        if (!track.title) {
+            try {
+                // For Live Radio the channel name is the <audio> title.
+                track["title"] = media.title;
+
+                // And the channel logo is at the top of the page
+                elm = document.querySelector(".stn-logo img");
+                track["artLocation"] = elm.src;
             } catch(e) {}
         }
     }
