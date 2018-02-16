@@ -40,5 +40,5 @@ Copyright
     + License: [CC-BY-3.0](./LICENSE-CC-BY.txt)
 
   - Other files:
-    + Copyright 2017 Andrew Stubbs <andrew.stubbs@gmail.com>
+    + Copyright 2018 Andrew Stubbs <andrew.stubbs@gmail.com>
     + License: [2-Clause BSD-license](./LICENSE-BSD.txt)
