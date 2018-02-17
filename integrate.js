@@ -64,11 +64,18 @@
   }
 
   WebApp._get_media_frame = function () {
-    var player = document.querySelector('.playback-player iframe') ||
-                 document.querySelector('.media-player iframe') ||
-                 document.querySelector('.episode-playout iframe') ||
-                 document.querySelector('#player iframe') ||
-                 document.querySelector('.radioplayer iframe')
+    var player = (
+        // iplayer recordings
+        document.querySelector('.playback-player iframe') ||
+        // news pages
+        document.querySelector('.media-player iframe') ||
+        // radio recordings
+        document.querySelector('.episode-playout iframe') ||
+        // tv live
+        document.querySelector('.player iframe') ||
+        // radio live
+        document.querySelector('.radioplayer iframe')
+    )
 
     if (player) {
       return player.contentDocument
@@ -159,14 +166,12 @@
       // If there's media, but no title property, then look further
       if (!track.title) {
         try {
-          // For Live TV the channel name is highlighted below the video
-          elm = document.querySelector('.channel.current')
-          track['title'] = elm.querySelector('span').innerText
+          // For Live TV the channel name is highlighted above the video
+          elm = document.querySelector('.tvip-channels-list .selected img')
+          track['title'] = elm.alt
 
           // Likewise the channel logo.
-          var style = document.defaultView.getComputedStyle(elm, null)
-          var url = style.getPropertyValue('background-image')
-          track['artLocation'] = url.slice(5, -2)
+          track['artLocation'] = elm.src
         } catch (e) {}
       }
       if (!track.title) {
