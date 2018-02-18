@@ -1,8 +1,8 @@
 BBC iPlayer Change Log
 ======================
 
-1.4 - unreleased
-----------------
+1.4 - February 18th, 2018
+-------------------------
 
   * Switch to Chromium for improved stability and live broadcast support.
   * Update live TV & radio integration.
