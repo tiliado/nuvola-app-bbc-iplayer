@@ -1,6 +1,9 @@
 BBC iPlayer Change Log
 ======================
 
+1.5 - May 8th, 2018
+-------------------
+
   * The Chromium-based backend is required to achieve audio playback without Flash plugin
     (when possible) or better stability of Flash plugin (e.g. for sports broadcasting).
     Issue: tiliado/nuvola-app-bbc-iplayer#10, tiliado/nuvolaruntime#354
