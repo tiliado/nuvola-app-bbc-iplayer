@@ -10,6 +10,7 @@
   "api_major": 4,
   "api_minor": 11,
   "categories": "AudioVideo;Audio;",
+  "dark_theme": true,
   "license": "2-Clause BSD-license; CC-BY-SA 3.0",
   "build": {
     "icons": [
