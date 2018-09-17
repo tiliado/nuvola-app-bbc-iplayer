@@ -74,7 +74,11 @@
         // tv live
         document.querySelector('.player iframe') ||
         // radio live
-        document.querySelector('.radio-main iframe')
+        document.querySelector('.radio-main iframe') ||
+        // sport
+        document.querySelector('.smp iframe') ||
+        // cbbc & cebeebies
+        document.querySelector('.smp-embed iframe')
     )
 
     if (player) {
