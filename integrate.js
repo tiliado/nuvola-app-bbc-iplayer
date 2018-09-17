@@ -87,16 +87,14 @@
   WebApp._get_media = function () {
     try {
       var iframe = this._get_media_frame()
-      var i;
+      var i
       var players = iframe.querySelectorAll('audio')
       for (i = 0; i < players.length; i++) {
-            if (players[i].readyState > 0)
-                return players[i];
+        if (players[i].readyState > 0) return players[i]
       }
       players = iframe.querySelectorAll('video')
       for (i = 0; i < players.length; i++) {
-            if (players[i].readyState > 0)
-                return players[i];
+        if (players[i].readyState > 0) return players[i]
       }
     } catch (e) {}
     return null
