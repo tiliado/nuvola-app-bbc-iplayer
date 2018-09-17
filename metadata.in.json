@@ -2,7 +2,7 @@
   "id": "bbc_iplayer",
   "name": "BBC iPlayer",
   "home_url": "http://www.bbc.co.uk/iplayer",
-  "allowed_uri": "^https?://www.bbc.co.uk",
+  "allowed_uri": "^https?://[^/]*.bbc.co.uk",
   "maintainer_name": "Andrew Stubbs",
   "maintainer_link": "https://github.com/a-m-s",
   "version_major": 1,
@@ -19,5 +19,5 @@
       "src/icon-sm.svg 32 48"
     ]
   },
-  "requirements": "Chromium[65] Codec[H264] Codec[MP3] Feature[MSE] Feature[Flash]"
+  "requirements": "Chromium[65] Codec[H264] Codec[MP3] Feature[MSE]"
 }

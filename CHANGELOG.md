@@ -1,6 +1,12 @@
 BBC iPlayer Change Log
 ======================
 
+1.6 - unreleased
+----------------
+
+  * Update following BBC changes.
+  * Remove Flash plugin as it's no longer required.
+
 1.5 - May 8th, 2018
 -------------------
 

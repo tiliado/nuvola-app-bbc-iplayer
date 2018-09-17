@@ -74,7 +74,7 @@
         // tv live
         document.querySelector('.player iframe') ||
         // radio live
-        document.querySelector('.radioplayer iframe')
+        document.querySelector('.radio-main iframe')
     )
 
     if (player) {
@@ -87,11 +87,19 @@
   WebApp._get_media = function () {
     try {
       var iframe = this._get_media_frame()
-      return iframe.querySelector('audio') ||
-             iframe.querySelector('video')
-    } catch (e) {
-      return null
-    }
+      var i;
+      var players = iframe.querySelectorAll('audio')
+      for (i = 0; i < players.length; i++) {
+            if (players[i].readyState > 0)
+                return players[i];
+      }
+      players = iframe.querySelectorAll('video')
+      for (i = 0; i < players.length; i++) {
+            if (players[i].readyState > 0)
+                return players[i];
+      }
+    } catch (e) {}
+    return null
   }
 
   WebApp._get_play_button = function () {
@@ -107,7 +115,7 @@
   WebApp._get_skip_button = function () {
     try {
       var tvPlayer = this._get_media_frame()
-      return tvPlayer.querySelector('.skip-button')
+      return tvPlayer.querySelector('.js-skip')
     } catch (e) {
       return null
     }
