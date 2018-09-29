@@ -1,4 +1,4 @@
-BBC iPlayer • Nuvola Apps Runtime
+BBC iPlayer • Nuvola Apps Runtime [![CircleCI](https://circleci.com/gh/tiliado/nuvola-app-bbc-iplayer/tree/master.svg?style=svg)](https://circleci.com/gh/tiliado/nuvola-app-bbc-iplayer/tree/master)
 =================================
 
 Integration of BBC iPlayer into your linux desktop via
