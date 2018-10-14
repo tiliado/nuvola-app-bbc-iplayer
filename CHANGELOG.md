@@ -1,8 +1,8 @@
 BBC iPlayer Change Log
 ======================
 
-1.6 - unreleased
-----------------
+1.6  - October 14th, 2018
+-------------------------
 
   * Nuvola 4.11 is required.
   * A dark theme variant is used by default.
