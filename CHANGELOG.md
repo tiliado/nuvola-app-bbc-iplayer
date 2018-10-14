@@ -4,8 +4,11 @@ BBC iPlayer Change Log
 1.6 - unreleased
 ----------------
 
+  * Nuvola 4.11 is required.
+  * A dark theme variant is used by default.
   * Update following BBC changes.
   * Remove Flash plugin as it's no longer required.
+  * Adjust the filter of external URLs to allow `bbc.com` for account sign-in. Issue: tiliado/nuvolaruntime#476
 
 1.5 - May 8th, 2018
 -------------------
