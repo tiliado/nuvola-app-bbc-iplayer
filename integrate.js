@@ -26,20 +26,20 @@
 
 ;(function (Nuvola) {
   // Create media player component
-  var player = Nuvola.$object(Nuvola.MediaPlayer)
+  const player = Nuvola.$object(Nuvola.MediaPlayer)
 
   // Handy aliases
-  var PlaybackState = Nuvola.PlaybackState
-  var PlayerAction = Nuvola.PlayerAction
+  const PlaybackState = Nuvola.PlaybackState
+  const PlayerAction = Nuvola.PlayerAction
 
   // Create new WebApp prototype
-  var WebApp = Nuvola.$WebApp()
+  const WebApp = Nuvola.$WebApp()
 
   // Initialization routines
   WebApp._onInitWebWorker = function (emitter) {
     Nuvola.WebApp._onInitWebWorker.call(this, emitter)
 
-    var state = document.readyState
+    const state = document.readyState
     if (state === 'interactive' || state === 'complete') {
       this._onPageReady()
     } else {
@@ -54,7 +54,7 @@
 
     // Prevent links opening in new windows or popups
     // Without this we can't integrate the radio player.
-    var wrappedWindow = window.open
+    const wrappedWindow = window.open
     window.open = function (url, name, specs, replace) {
       wrappedWindow(url, '_self', specs, replace)
     }
@@ -64,9 +64,9 @@
   }
 
   WebApp._get_media_frame = function () {
-    var player = (
-        // iplayer recordings
-        document.querySelector('.playback-player iframe') ||
+    const player = (
+      // iplayer recordings
+      document.querySelector('.playback-player iframe') ||
         // news pages
         document.querySelector('.media-player iframe') ||
         // radio recordings
@@ -90,9 +90,9 @@
 
   WebApp._get_media = function () {
     try {
-      var iframe = this._get_media_frame()
-      var i
-      var players = iframe.querySelectorAll('audio')
+      const iframe = this._get_media_frame()
+      let i
+      let players = iframe.querySelectorAll('audio')
       for (i = 0; i < players.length; i++) {
         if (players[i].readyState > 0) return players[i]
       }
@@ -106,7 +106,7 @@
 
   WebApp._get_play_button = function () {
     try {
-      var iframe = this._get_media_frame()
+      const iframe = this._get_media_frame()
       return iframe.querySelector('.p_playButton') ||
              iframe.querySelector('.p_button')
     } catch (e) {
@@ -116,7 +116,7 @@
 
   WebApp._get_skip_button = function () {
     try {
-      var tvPlayer = this._get_media_frame()
+      const tvPlayer = this._get_media_frame()
       return tvPlayer.querySelector('.js-skip')
     } catch (e) {
       return null
@@ -124,12 +124,12 @@
   }
 
   WebApp._is_tv_playing = function () {
-    var media = this._get_media()
+    const media = this._get_media()
     return media && !media.paused
   }
 
   WebApp._is_radio_playing = function () {
-    var radioControls = document.getElementById('controls')
+    const radioControls = document.getElementById('controls')
     return (radioControls &&
             (radioControls.className === 'stoppable' ||
              radioControls.className === 'pauseable'))
@@ -141,7 +141,7 @@
 
   // Extract data from the web page
   WebApp.update = function () {
-    var track = {
+    const track = {
       title: null,
       artist: null,
       album: null,
@@ -149,16 +149,16 @@
       rating: null
     }
 
-    var state = PlaybackState.UNKNOWN
+    let state = PlaybackState.UNKNOWN
 
-    var elm = document.head.querySelector("[property='og:title']")
-    if (elm) track['title'] = elm.content
+    let elm = document.head.querySelector("[property='og:title']")
+    if (elm) track.title = elm.content
     elm = document.head.querySelector("[property='og:image']")
-    if (elm) track['artLocation'] = elm.content
+    if (elm) track.artLocation = elm.content
 
-    var media = this._get_media()
-    var playButton = this._get_play_button()
-    var skipButton = this._get_skip_button()
+    const media = this._get_media()
+    const playButton = this._get_play_button()
+    const skipButton = this._get_skip_button()
 
     if (media && !media.paused) {
       state = PlaybackState.PLAYING
@@ -178,20 +178,20 @@
         try {
           // For Live TV the channel name is highlighted above the video
           elm = document.querySelector('.tvip-channels-list .selected img')
-          track['title'] = elm.alt
+          track.title = elm.alt
 
           // Likewise the channel logo.
-          track['artLocation'] = elm.src
+          track.artLocation = elm.src
         } catch (e) {}
       }
       if (!track.title) {
         try {
           // For Live Radio the channel name is the <audio> title.
-          track['title'] = media.title
+          track.title = media.title
 
           // And the channel logo is at the top of the page
           elm = document.querySelector('.stn-logo img')
-          track['artLocation'] = elm.src
+          track.artLocation = elm.src
         } catch (e) {}
       }
     }
@@ -208,12 +208,15 @@
     setTimeout(this.update.bind(this), 500)
   }
 
-// Handler of playback actions
+  // Handler of playback actions
   WebApp._onActionActivated = function (emitter, name, param) {
+    let media
+    let button
+
     switch (name) {
       case PlayerAction.TOGGLE_PLAY:
       case PlayerAction.PAUSE:
-        var media = this._get_media()
+        media = this._get_media()
         if (media && !media.paused) {
           media.pause()
           break
@@ -221,7 +224,7 @@
         // Fallthrough
       case PlayerAction.PLAY:
         // Use the button because media.play() doesn't work initially
-        var button = this._get_play_button()
+        button = this._get_play_button()
         if (button) Nuvola.clickOnElement(button)
         break
       case PlayerAction.NEXT_SONG:
@@ -240,6 +243,6 @@
   }
 
   WebApp.start()
-})(this)  // function(Nuvola)
+})(this) // function(Nuvola)
 
 // vim: tabstop=4 shiftwidth=4 expandtab
